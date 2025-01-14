@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" class="[scrollbar-gutter:stable]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Phoenix Framework">
+      {assigns[:page_title] || "CaskyBudget"}
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+  </head>
+  <body class="bg-white flex">
+    <div class="z-10 w-1/6">
+      <.sidebar id="sidebar-nav" hide_position="left" size="small" border="small">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-center mt-6">
+            <img
+              src={@current_user.current_organization.image_url}
+              class={[
+                "transition-opacity duration-300 w-12",
+                (true && "opacity-100") || "opacity-0"
+              ]}
+            />
+            <h2 class="text-lg px-4 py-2">{@current_user.current_organization.name}</h2>
+          </div>
+          <.link
+            href={~p"/organization/users"}
+            class={[
+              "hover:bg-gray-400 px-4 py-2 text-lg leading-6 text-zinc-900  hover:text-zinc-700",
+              String.contains?(@page_title, "Users") && "text-blue-300"
+            ]}
+          >
+            Users
+          </.link>
+          <.link
+            href={~p"/budget"}
+            class={[
+              "hover:bg-gray-400 px-4 py-2 text-lg leading-6 text-zinc-900  hover:text-zinc-700",
+              String.contains?(@page_title, "Budget") && "text-blue-500"
+            ]}
+          >
+            Budget
+          </.link>
+          <.link
+            href={~p"/my-receipts"}
+            class={[
+              "hover:bg-gray-400 px-4 py-2 text-lg leading-6 text-zinc-900  hover:text-zinc-700",
+              String.contains?(@page_title, "My Receipts") && "text-blue-500"
+            ]}
+          >
+            My Receipts
+          </.link>
+          <.link
+            href={~p"/users/settings"}
+            class={[
+              "hover:bg-gray-400 px-4 py-2 text-lg leading-6 text-zinc-900  hover:text-zinc-700",
+              String.contains?(@page_title, "Settings") && "text-blue-500"
+            ]}
+          >
+            Settings
+          </.link>
+          <.link
+            href={~p"/users/log_out"}
+            method="delete"
+            class="px-4 py-2 text-lg leading-6 text-zinc-900  hover:text-zinc-700"
+          >
+            Log out
+          </.link>
+        </div>
+      </.sidebar>
+    </div>
+    <%!-- <ul class="z-10 flex flex-col gap-2 p-6 border-r-[1px] border-r-gray-400 w-1/6">
+      <%= if @current_user do %>
+        <li class="text-lg  leading-6 text-zinc-900">
+          {@current_user.email}
+        </li>
+        <li>
+          <.link
+            href={~p"/budget"}
+            class={[
+              "text-lg leading-6 text-zinc-900  hover:text-zinc-700",
+              String.contains?(@page_title, "Budget") && "text-blue-500"
+            ]}
+          >
+            Budget
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/settings"}
+            class="text-lg leading-6 text-zinc-900  hover:text-zinc-700"
+          >
+            Settings
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/log_out"}
+            method="delete"
+            class="text-lg leading-6 text-zinc-900  hover:text-zinc-700"
+          >
+            Log out
+          </.link>
+        </li>
+      <% else %>
+        <li>
+          <.link
+            href={~p"/users/register"}
+            class="text-lg leading-6 text-zinc-900  hover:text-zinc-700"
+          >
+            Register
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/users/log_in"}
+            class="text-lg leading-6 text-zinc-900 hover:text-zinc-700"
+          >
+            Log in
+          </.link>
+        </li>
+      <% end %>
+    </ul> --%>
+    <div class="w-full">
+      {@inner_content}
+    </div>
+  </body>
+</html>
