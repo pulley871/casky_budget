@@ -88,6 +88,15 @@ defmodule CaskyBudgetWeb.Router do
   end
 
   scope "/", CaskyBudgetWeb do
+    pipe_through [:authenticated_browser, :require_authenticated_user, :ensure_admin_role]
+
+    live_session :ensure_admin_role,
+      on_mount: [{CaskyBudgetWeb.UserAuth, :ensure_authenticated}] do
+      live "/admin", AdminLive.Index
+    end
+  end
+
+  scope "/", CaskyBudgetWeb do
     pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete

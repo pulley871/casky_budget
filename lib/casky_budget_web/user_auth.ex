@@ -97,7 +97,6 @@ defmodule CaskyBudgetWeb.UserAuth do
     user =
       user_token &&
         Accounts.get_user_by_session_token(user_token)
-        |> Repo.preload(:current_organization)
 
     assign(conn, :current_user, user)
   end
@@ -184,7 +183,6 @@ defmodule CaskyBudgetWeb.UserAuth do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
         Accounts.get_user_by_session_token(user_token)
-        |> Repo.preload(:current_organization)
       end
     end)
   end
@@ -217,6 +215,22 @@ defmodule CaskyBudgetWeb.UserAuth do
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()
+    end
+  end
+
+  def ensure_admin_role(conn, _opts) do
+    current_user = conn.assigns[:current_user]
+
+    cond do
+      current_user && current_user.role == "admin" ->
+        conn
+
+      true ->
+        conn
+        |> put_flash(:error, "You must be an admin to access this page.")
+        |> maybe_store_return_to()
+        |> redirect(to: ~p"/budget")
+        |> halt()
     end
   end
 

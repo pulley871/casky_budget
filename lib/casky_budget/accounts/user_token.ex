@@ -58,8 +58,12 @@ defmodule CaskyBudget.Accounts.UserToken do
     query =
       from token in by_token_and_context_query(token, "session"),
         join: user in assoc(token, :user),
-        where: token.inserted_at > ago(@session_validity_in_days, "day"),
-        select: user
+        join: uo in assoc(user, :users_organizations),
+        join: o in assoc(user, :current_organization),
+        where:
+          token.inserted_at > ago(@session_validity_in_days, "day") and
+            uo.organization_id == user.organization_id and o.id == user.organization_id,
+        select: {user, uo, o}
 
     {:ok, query}
   end

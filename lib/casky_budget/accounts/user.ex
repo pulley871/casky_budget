@@ -20,7 +20,9 @@ defmodule CaskyBudget.Accounts.User do
     field :pending_receipts, :integer, virtual: true
     field :approved_receipts, :integer, virtual: true
     field :receipts_awaiting_payment, :integer, virtual: true
+    field :role, :string, virtual: true
     has_many :receipts, CaskyBudget.Budgets.Receipt, foreign_key: :uploaded_by_user_id
+    has_many :users_organizations, CaskyBudget.Accounts.UserOrganizations
 
     belongs_to :current_organization, CaskyBudget.Accounts.Organization,
       foreign_key: :organization_id
