@@ -53,17 +53,8 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
-import { 
-  Chart, 
-  DoughnutController, 
-  BarController,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement, 
-  Tooltip, 
-  Legend 
-} from 'chart.js';
+import { Chart } from 'chart.js/dist/chart.umd.js';
+
 
 // Register all required components
 Chart.register(
