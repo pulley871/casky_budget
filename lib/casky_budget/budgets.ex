@@ -544,4 +544,10 @@ defmodule CaskyBudget.Budgets do
   def change_receipt(%Receipt{} = receipt, attrs \\ %{}) do
     Receipt.changeset(receipt, attrs)
   end
+
+  def approve_receipt(%Receipt{} = receipt) do
+    receipt
+    |> Ecto.Changeset.change(is_approved: true)
+    |> Repo.update()
+  end
 end

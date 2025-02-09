@@ -172,7 +172,11 @@ defmodule CaskyBudgetWeb.BudgetLive.Show do
                   <% end %>
                 </:col>
                 <:col :let={receipt} label="">
-                  <.link navigate={~p"/receipt/#{receipt}"} class="hover:text-blue-500">
+                  <.link
+                    :if={@current_user.role == :admin}
+                    navigate={~p"/receipt/#{receipt}"}
+                    class="hover:text-blue-500"
+                  >
                     <.icon name="hero-pencil-square" class="" />
                   </.link>
                 </:col>
@@ -212,7 +216,11 @@ defmodule CaskyBudgetWeb.BudgetLive.Show do
                   <% end %>
                 </:col>
                 <:col :let={receipt} label="">
-                  <.link navigate={~p"/receipt/#{receipt}"} class="hover:text-blue-500">
+                  <.link
+                    :if={@current_user.role == :admin}
+                    navigate={~p"/receipt/#{receipt}"}
+                    class="hover:text-blue-500"
+                  >
                     <.icon name="hero-pencil-square" class="" />
                   </.link>
                 </:col>

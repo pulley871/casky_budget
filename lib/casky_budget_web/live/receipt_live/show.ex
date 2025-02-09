@@ -7,10 +7,14 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
   end
 
   def handle_params(%{"id" => id}, _uri, socket) do
+    receipt = Budgets.get_receipt!(id)
+
     socket =
       socket
       |> assign(:page_title, "View Receipt")
-      |> assign(:receipt, Budgets.get_receipt!(id))
+      |> assign(:receipt, receipt)
+      |> assign(:form, to_form(Budgets.change_receipt(receipt)))
+      |> assign(:show_modal, false)
 
     {:noreply, socket}
   end
@@ -68,7 +72,71 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
           <p class="font-medium text-gray-900">{@receipt.approved_by_user.email}</p>
         </div>
       </div>
+      <.simple_form
+        :if={!@receipt.is_approved}
+        id={"receipt-approval-#{@receipt.id}"}
+        for={@form}
+        phx-submit={show_modal("approval-confirm-receipt-#{@receipt.id}")}
+      >
+        <:actions>
+          <.button>
+            Approve receipt
+          </.button>
+        </:actions>
+      </.simple_form>
+      <.modal
+        id={"approval-confirm-receipt-#{@receipt.id}"}
+        title="Approval confirmation"
+        rounded="large"
+        on_cancel={hide_modal("approval-confirm-receipt-#{@receipt.id}")}
+      >
+        <div :if={!@receipt.is_approved}>
+          <h3>Are you sure you want to approve?</h3>
+          <div class="flex gap-6">
+            <.button phx-click={hide_modal("approval-confirm-receipt-#{@receipt.id}")}>
+              Cancel
+            </.button>
+            <.button phx-click="approve_receipt">Confirm</.button>
+          </div>
+        </div>
+        <div :if={@receipt.is_approved}>
+          <h3>Receipt Approved.</h3>
+          <div class="flex gap-6">
+            <.back
+              navigate={"/budget/subcategory/#{@receipt.sub_category_id}"}
+              class="hover:text-blue-600"
+            >
+              Back to {@receipt.sub_category.name}
+            </.back>
+            <.button phx-click={hide_modal("approval-confirm-receipt-#{@receipt.id}")}>
+              Close
+            </.button>
+          </div>
+        </div>
+      </.modal>
     </div>
     """
+  end
+
+  def handle_event("approve_receipt", _params, socket) do
+    case Budgets.approve_receipt(socket.assigns.receipt) do
+      {:ok, receipt} ->
+        hide_modal("approval-confirm-receipt-#{socket.assigns.receipt.id}")
+
+        socket =
+          socket
+          |> assign(:receipt, receipt)
+          |> put_flash(:info, "Receipt approved")
+          |> assign(:show_modal, false)
+
+        {:noreply, socket}
+
+      {:error, _changeset} ->
+        socket =
+          socket
+          |> put_flash(:error, "Oops something went wrong")
+
+        {:noreply, socket}
+    end
   end
 end
