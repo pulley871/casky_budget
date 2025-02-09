@@ -56,7 +56,7 @@
           >
             My Receipts
           </.link>
-          <%= if @current_user && @current_user.role == "admin" do %>
+          <%= if @current_user && @current_user.role == :admin do %>
             <.link
               href={~p"/admin"}
               class={[

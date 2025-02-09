@@ -222,7 +222,7 @@ defmodule CaskyBudgetWeb.UserAuth do
     current_user = conn.assigns[:current_user]
 
     cond do
-      current_user && current_user.role == "admin" ->
+      current_user && current_user.role == :admin ->
         conn
 
       true ->

@@ -6,6 +6,7 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
   def mount(_params, _session, socket) do
     receipt = %Receipt{}
     changeset = Budgets.change_receipt(receipt)
+    user_id = socket.assigns.current_user.id
 
     socket =
       socket
@@ -15,21 +16,12 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
       |> assign(:form, to_form(changeset))
       |> assign(:receipt, receipt)
       |> assign_async(:receipts, fn ->
-        receipts = Budgets.list_receipts_by_user(socket.assigns.current_user.id)
+        receipts = Budgets.list_receipts_by_user(user_id)
 
         {:ok, %{receipts: receipts}}
       end)
 
     {:ok, socket}
-  end
-
-  def handle_event("show_modal", _params, socket) do
-    {:noreply,
-     socket
-     |> assign(:show_modal, true)
-     |> push_event("show_modal", %{
-       id: "uniqu_id"
-     })}
   end
 
   def handle_event("validate", %{"receipt" => params}, socket) do
@@ -71,10 +63,9 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
     ~H"""
     <div class="p-6">
       <.modal
-        id="create-receipt"
+        id="create-receipt-modal"
         title="Add receipt"
-        show={@show_modal}
-        on_cancel={hide_modal("create-receipt")}
+        on_cancel={hide_modal("create-receipt-modal")}
       >
         <div class="space-y-4">
           <p>
@@ -111,7 +102,7 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
       </.modal>
       <div class="flex justify-between">
         <h1 class="text-xl font-bold mb-12">My receipts</h1>
-        <.button phx-click={show_modal("create-receipt")} class="h-12">
+        <.button phx-click={show_modal("create-receipt-modal")} class="h-12">
           Add receipt
         </.button>
       </div>
