@@ -1,4 +1,5 @@
 defmodule CaskyBudgetWeb.ReceiptLive.Show do
+  alias CaskyBudget.Budgets.Budget
   alias CaskyBudget.Budgets
   use CaskyBudgetWeb, :live_view
 
@@ -13,7 +14,7 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
       socket
       |> assign(:page_title, "View Receipt")
       |> assign(:receipt, receipt)
-      |> assign(:form, to_form(Budgets.change_receipt(receipt)))
+      |> assign(:form, to_form(Budgets.change_receipt_is_paid(receipt)))
       |> assign(:show_modal, false)
 
     {:noreply, socket}
@@ -72,18 +73,14 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
           <p class="font-medium text-gray-900">{@receipt.approved_by_user.email}</p>
         </div>
       </div>
-      <.simple_form
+
+      <.button
         :if={!@receipt.is_approved}
-        id={"receipt-approval-#{@receipt.id}"}
-        for={@form}
-        phx-submit={show_modal("approval-confirm-receipt-#{@receipt.id}")}
+        phx-click={show_modal("approval-confirm-receipt-#{@receipt.id}")}
       >
-        <:actions>
-          <.button>
-            Approve receipt
-          </.button>
-        </:actions>
-      </.simple_form>
+        Approve receipt
+      </.button>
+
       <.modal
         id={"approval-confirm-receipt-#{@receipt.id}"}
         title="Approval confirmation"
@@ -114,8 +111,69 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
           </div>
         </div>
       </.modal>
+      <.button
+        :if={@receipt.is_approved && !@receipt.is_paid}
+        phx-click={show_modal("pay-receipt-#{@receipt.id}")}
+      >
+        Mark as paid
+      </.button>
+      <.modal
+        id={"pay-receipt-#{@receipt.id}"}
+        title="Mark as paid"
+        rounded="large"
+        on_cancel={hide_modal("pay-receipt-#{@receipt.id}")}
+      >
+        <div>
+          <h3>Receipt Approved.</h3>
+          <.simple_form
+            for={@form}
+            phx-change="validate"
+            id="pay-receipt-form"
+            phx-submit="mark_as_paid"
+          >
+            <.input label="Check number" field={@form[:check_number]} placeholder="Etx-3214" />
+            <:actions>
+              <.button>
+                Mark as paid
+              </.button>
+            </:actions>
+          </.simple_form>
+          <div class="flex gap-6 mt-6 justify-end">
+            <.button phx-click={hide_modal("approval-confirm-receipt-#{@receipt.id}")}>
+              Cancel
+            </.button>
+          </div>
+        </div>
+      </.modal>
     </div>
     """
+  end
+
+  def handle_event("validate", %{"receipt" => receipt_params}, socket) do
+    socket.assigns.receipt
+
+    changeset = Budgets.change_receipt_is_paid(socket.assigns.receipt, receipt_params)
+    IO.inspect(changeset)
+
+    socket =
+      socket
+      |> assign(:form, to_form(changeset))
+
+    {:noreply, socket}
+  end
+
+  def handle_event("mark_as_paid", %{"receipt" => receipt_params}, socket) do
+    case Budgets.mark_receip_as_paid(socket.assigns.receipt, receipt_params["check_number"]) do
+      {:ok, receipt} ->
+        socket =
+          socket
+          |> assign(:receipt, receipt)
+
+        {:noreply, socket}
+
+      {:error, changeset} ->
+        {:noreply, socket}
+    end
   end
 
   def handle_event("approve_receipt", _params, socket) do

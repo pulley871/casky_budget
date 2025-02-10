@@ -545,9 +545,20 @@ defmodule CaskyBudget.Budgets do
     Receipt.changeset(receipt, attrs)
   end
 
+  def change_receipt_is_paid(%Receipt{} = receipt, attrs \\ %{}) do
+    Receipt.pay_changeset(receipt, attrs)
+  end
+
   def approve_receipt(%Receipt{} = receipt) do
     receipt
     |> Ecto.Changeset.change(is_approved: true)
+    |> Repo.update()
+  end
+
+  def mark_receip_as_paid(%Receipt{} = receipt, check_number) do
+    receipt
+    |> Ecto.Changeset.change(is_paid: true)
+    |> Ecto.Changeset.change(check_number: check_number)
     |> Repo.update()
   end
 end

@@ -45,4 +45,11 @@ defmodule CaskyBudget.Budgets.Receipt do
     ])
     |> validate_number(:amount, greater_than: 0.01)
   end
+
+  def pay_changeset(receipt, attrs) do
+    receipt
+    |> cast(attrs, [:check_number])
+    |> validate_required([:check_number])
+    |> validate_length(:check_number, max: 10)
+  end
 end
