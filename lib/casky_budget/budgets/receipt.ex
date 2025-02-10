@@ -50,6 +50,6 @@ defmodule CaskyBudget.Budgets.Receipt do
     receipt
     |> cast(attrs, [:check_number])
     |> validate_required([:check_number])
-    |> validate_length(:check_number, max: 10)
+    |> validate_length(:check_number, minx: 1, max: 10)
   end
 end

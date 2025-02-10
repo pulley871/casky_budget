@@ -70,7 +70,7 @@ defmodule CaskyBudgetWeb.BudgetLive.Index do
   def render(assigns) do
     ~H"""
     <div class="p-6">
-      <.form phx-change="change_budget" class="mb-12 w-full md:w-32">
+      <.form phx-change="change_budget" class="mb-12 w-full md:w-32" for={%{}}>
         <.input
           type="select"
           label="Select a budget"

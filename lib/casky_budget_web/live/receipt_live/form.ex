@@ -8,17 +8,17 @@ defmodule CaskyBudgetWeb.ReceiptLive.Form do
   end
 
   defp handle_action(:new, _params, socket) do
-    incident = %Receipt{}
-    changeset = Budgets.change_receipt(incident)
+    receipt = %Receipt{}
+    changeset = Budgets.change_receipt(receipt)
 
     socket
-    |> assign(:page_title, "New Incident Form")
+    |> assign(:page_title, "New Receipt Form")
     |> assign(:form, to_form(changeset))
     # |> allow_upload(:photo, accept: ~w(.png, .jpeg, .pdf), max_entries: 1, auto_upload: true)
-    |> assign(:incident, incident)
+    |> assign(:receipt, receipt)
   end
 
-  defp handle_action(:edit, %{"id" => id}, socket) do
+  defp handle_action(:edit, %{"id" => _id}, socket) do
     # incident = Receipt.get(id)
     # changeset = Admin.change_incident(incident)
 
@@ -38,7 +38,6 @@ defmodule CaskyBudgetWeb.ReceiptLive.Form do
         name="personal-payment"
         label="Were personal funds used to for this?"
         options={[{"Yes", "true"}, {"No", "false"}]}
-        selected="false"
         field={@form[:is_personal_payment]}
       />
       <%!-- <.input label="Upload receipt" field={@form[:receipt]} type="file" /> --%>

@@ -3,14 +3,15 @@ defmodule CaskyBudgetWeb.OrganizationUsersLive.Index do
   use CaskyBudgetWeb, :live_view
 
   def mount(_params, _session, socket) do
+    users = Accounts.get_organization_users(socket.assigns.current_user.current_organization.id)
+
     socket =
       socket
       |> assign(:page_title, "Organization Users")
       |> assign_async(:users, fn ->
         {:ok,
          %{
-           users:
-             Accounts.get_organization_users(socket.assigns.current_user.current_organization.id)
+           users: users
          }}
       end)
 

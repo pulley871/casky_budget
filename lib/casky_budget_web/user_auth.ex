@@ -4,7 +4,6 @@ defmodule CaskyBudgetWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias CaskyBudget.Repo
   alias CaskyBudget.Accounts
 
   # Make the remember me cookie valid for 60 days.

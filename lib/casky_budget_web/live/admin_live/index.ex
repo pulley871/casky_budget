@@ -57,7 +57,7 @@ defmodule CaskyBudgetWeb.AdminLive.Index do
   end
 
   @impl true
-  def handle_event("validate_role_change", %{"role" => role} = params, socket) do
+  def handle_event("validate_role_change", %{"role" => _role} = params, socket) do
     socket =
       socket
       |> assign(:update_user_form, to_form(params))
@@ -143,34 +143,36 @@ defmodule CaskyBudgetWeb.AdminLive.Index do
     <!-- Filter Form -->
       <.form for={@form} phx-change="filter" id="filter-form" class="flex items-center gap-6">
         <.input field={@form[:q]} placeholder="Search users..." autocomplete="off" />
-        <.input field={@form[:r]} type="select" options={[:user, :admin]} } />
+        <.input field={@form[:r]} type="select" options={[:user, :admin]} />
         <.link patch={~p"/admin"}>Reset</.link>
       </.form>
       
     <!-- User Table -->
-      <.table id="users-list" rows={@streams.users} phx-update="stream">
-        <:col :let={{_dom_id, user}} label="Name">
-          {user.first_name} {user.last_name}
-        </:col>
-        <:col :let={{_dom_id, user}} label="Phone">
-          {user.phone}
-        </:col>
-        <:col :let={{_dom_id, user}} label="Email">
-          {user.email}
-        </:col>
-        <:col :let={{_dom_id, user}} label="Address">
-          <div>
-            <p class="text-sm">{user.address_line_one}</p>
-            <p class="text-sm">{user.city} {user.state} {user.postal_code}</p>
-          </div>
-        </:col>
-        <:col :let={{_dom_id, user}} label="Role">
-          {user.role}
-        </:col>
-        <:action :let={{_dom_id, user}}>
-          <.button phx-click="edit_user" phx-value-id={user.id}>Edit Role</.button>
-        </:action>
-      </.table>
+      <div phx-update="stream" id="users-list">
+        <.table id="users-list" rows={@streams.users}>
+          <:col :let={{_dom_id, user}} label="Name">
+            {user.first_name} {user.last_name}
+          </:col>
+          <:col :let={{_dom_id, user}} label="Phone">
+            {user.phone}
+          </:col>
+          <:col :let={{_dom_id, user}} label="Email">
+            {user.email}
+          </:col>
+          <:col :let={{_dom_id, user}} label="Address">
+            <div>
+              <p class="text-sm">{user.address_line_one}</p>
+              <p class="text-sm">{user.city} {user.state} {user.postal_code}</p>
+            </div>
+          </:col>
+          <:col :let={{_dom_id, user}} label="Role">
+            {user.role}
+          </:col>
+          <:action :let={{_dom_id, user}}>
+            <.button phx-click="edit_user" phx-value-id={user.id}>Edit Role</.button>
+          </:action>
+        </.table>
+      </div>
     </div>
     """
   end
