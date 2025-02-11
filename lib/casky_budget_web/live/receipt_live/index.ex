@@ -82,7 +82,7 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
           <:tab>Approved Receipts</:tab>
           <:tab>Pending Receipts</:tab>
           <:panel>
-            <div class="border-2 border-gray-300 p-6 rounded-lg" id="approved-list">
+            <div class="border-2 border-gray-300 p-6 rounded-lg min-h-screen" id="approved-list">
               <h4 class="text-lg font-bold">Approved Receipts</h4>
 
               <.table id="approved-receipts" rows={approved_receipts(receipts)}>
@@ -133,7 +133,7 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
             </div>
           </:panel>
           <:panel>
-            <div class="border-2 border-gray-300 p-6 rounded-lg" id="pending-list">
+            <div class="border-2 border-gray-300 p-6 rounded-lg min-h-screen" id="pending-list">
               <h4 class="text-lg font-bold">Pending Receipts</h4>
               <.table id="pending-receipts" rows={pending_receipts(receipts)}>
                 <:col :let={receipt} label="Date submitted">
@@ -166,41 +166,37 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
         <.modal
           id={"create-receipt-modal-#{@current_user.id}"}
           title="Add receipt"
+          rounded="extra_large"
           on_cancel={hide_modal("create-receipt-modal-#{@current_user.id}")}
         >
-          <div class="space-y-4">
-            <p>
-              Are you sure you want to delete this ite?
-            </p>
-            <.simple_form
-              for={@form}
-              class="flex flex-col gap-4"
-              id="receipt-form"
-              phx-change="validate"
-              phx-submit="save"
-            >
-              <.input
-                type="select"
-                label="Select a Category"
-                options={
-                  Enum.map(@sub_categories, fn sub_category ->
-                    {sub_category.name, sub_category.id}
-                  end)
-                }
-                field={@form[:sub_category_id]}
-              />
-              <.input type="number" label="How much is this receipt for?" field={@form[:amount]} />
-              <.input type="text" label="Where was the purchase made?" field={@form[:business_name]} />
-              <.input
-                type="checkbox"
-                field={@form[:is_personal_payment]}
-                label="Paid with personal funds?"
-              />
-              <:actions>
-                <.button>Add Receipt</.button>
-              </:actions>
-            </.simple_form>
-          </div>
+          <.simple_form
+            for={@form}
+            class="flex flex-col gap-4"
+            id="receipt-form"
+            phx-change="validate"
+            phx-submit="save"
+          >
+            <.input
+              type="select"
+              label="Select a Category"
+              options={
+                Enum.map(@sub_categories, fn sub_category ->
+                  {sub_category.name, sub_category.id}
+                end)
+              }
+              field={@form[:sub_category_id]}
+            />
+            <.input type="number" label="How much is this receipt for?" field={@form[:amount]} />
+            <.input type="text" label="Where was the purchase made?" field={@form[:business_name]} />
+            <.input
+              type="checkbox"
+              field={@form[:is_personal_payment]}
+              label="Paid with personal funds?"
+            />
+            <:actions>
+              <.button>Add Receipt</.button>
+            </:actions>
+          </.simple_form>
         </.modal>
       </.async_result>
     </div>

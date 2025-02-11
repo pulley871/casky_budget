@@ -183,7 +183,8 @@ defmodule CaskyBudgetWeb.Components.Tabs do
           class={[
             "tab-content",
             "[&:not(.active-tab-panel)]:hidden [&:not(.active-tab-panel)]:opacity-0 [&:not(.active-tab-panel)]:invisible",
-            "[&.active-tab-panel]:block [&.active-tab-panel]:opacity-100 [&.active-tab-panel]:visible"
+            "[&.active-tab-panel]:block [&.active-tab-panel]:opacity-100 [&.active-tab-panel]:visible",
+            panel[:class]
           ]}
         >
           {render_slot(panel)}
@@ -246,7 +247,8 @@ defmodule CaskyBudgetWeb.Components.Tabs do
           class={[
             "tab-content",
             "[&:not(.active-tab-panel)]:hidden [&:not(.active-tab-panel)]:opacity-0 [&:not(.active-tab-panel)]:invisible",
-            "[&.active-tab-panel]:block [&.active-tab-panel]:opacity-100 [&.active-tab-panel]:visible"
+            "[&.active-tab-panel]:block [&.active-tab-panel]:opacity-100 [&.active-tab-panel]:visible",
+            panel[:class]
           ]}
         >
           {render_slot(panel)}
