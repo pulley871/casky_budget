@@ -26,7 +26,6 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
 
   def handle_event("validate", %{"receipt" => params}, socket) do
     changeset = Budgets.change_receipt(socket.assigns.receipt, params)
-    IO.inspect(params)
 
     socket =
       socket
@@ -62,47 +61,9 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
   def render(assigns) do
     ~H"""
     <div class="p-6">
-      <.modal
-        id="create-receipt-modal"
-        title="Add receipt"
-        on_cancel={hide_modal("create-receipt-modal")}
-      >
-        <div class="space-y-4">
-          <p>
-            Are you sure you want to delete this ite?
-          </p>
-          <.simple_form
-            for={@form}
-            class="flex flex-col gap-4"
-            id="receipt-form"
-            phx-change="validate"
-            phx-submit="save"
-          >
-            <.input
-              type="select"
-              label="Select a Category"
-              options={
-                Enum.map(@sub_categories, fn sub_category -> {sub_category.name, sub_category.id} end)
-              }
-              field={@form[:sub_category_id]}
-            />
-            <.input type="number" label="How much is this receipt for?" field={@form[:amount]} />
-            <.input type="text" label="Where was the purchase made?" field={@form[:business_name]} />
-            <.input
-              type="checkbox"
-              field={@form[:is_personal_payment]}
-              label="Paid with personal funds?"
-            />
-            <:actions>
-              <.button>Add Receipt</.button>
-            </:actions>
-          </.simple_form>
-          <div class="flex gap-4 justify-center"></div>
-        </div>
-      </.modal>
       <div class="flex justify-between">
         <h1 class="text-xl font-bold mb-12">My receipts</h1>
-        <.button phx-click={show_modal("create-receipt-modal")} class="h-12">
+        <.button phx-click={show_modal("create-receipt-modal-#{@current_user.id}")} class="h-12">
           Add receipt
         </.button>
       </div>
@@ -202,6 +163,45 @@ defmodule CaskyBudgetWeb.ReceiptLive.Index do
             </div>
           </:panel>
         </.tabs>
+        <.modal
+          id={"create-receipt-modal-#{@current_user.id}"}
+          title="Add receipt"
+          on_cancel={hide_modal("create-receipt-modal-#{@current_user.id}")}
+        >
+          <div class="space-y-4">
+            <p>
+              Are you sure you want to delete this ite?
+            </p>
+            <.simple_form
+              for={@form}
+              class="flex flex-col gap-4"
+              id="receipt-form"
+              phx-change="validate"
+              phx-submit="save"
+            >
+              <.input
+                type="select"
+                label="Select a Category"
+                options={
+                  Enum.map(@sub_categories, fn sub_category ->
+                    {sub_category.name, sub_category.id}
+                  end)
+                }
+                field={@form[:sub_category_id]}
+              />
+              <.input type="number" label="How much is this receipt for?" field={@form[:amount]} />
+              <.input type="text" label="Where was the purchase made?" field={@form[:business_name]} />
+              <.input
+                type="checkbox"
+                field={@form[:is_personal_payment]}
+                label="Paid with personal funds?"
+              />
+              <:actions>
+                <.button>Add Receipt</.button>
+              </:actions>
+            </.simple_form>
+          </div>
+        </.modal>
       </.async_result>
     </div>
     """
