@@ -3,16 +3,14 @@ defmodule CaskyBudgetWeb.OrganizationUsersLive.Index do
   use CaskyBudgetWeb, :live_view
 
   def mount(_params, _session, socket) do
-    users = Accounts.get_organization_users(socket.assigns.current_user.current_organization.id)
-
     socket =
       socket
       |> assign(:page_title, "Organization Users")
       |> assign_async(:users, fn ->
-        {:ok,
-         %{
-           users: users
-         }}
+        users =
+          Accounts.get_organization_users(socket.assigns.current_user.current_organization.id)
+
+        {:ok, %{users: users}}
       end)
 
     {:ok, socket}
@@ -20,7 +18,7 @@ defmodule CaskyBudgetWeb.OrganizationUsersLive.Index do
 
   def render(assigns) do
     ~H"""
-    <div class="body-container">
+    <div class="body-container p-6">
       <h1 class="text-lg font-bold">Users</h1>
       <.async_result :let={users} assign={@users}>
         <:loading>
