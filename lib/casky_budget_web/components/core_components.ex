@@ -489,13 +489,15 @@ defmodule CaskyBudgetWeb.CoreComponents do
 
       <.back navigate={~p"/posts"}>Back to posts</.back>
   """
-  attr :class, :string, default: nil
+  attr :class, :string, default: ""
+  attr :container_class, :string, default: ""
   attr :navigate, :any, required: true
   slot :inner_block, required: true
 
   def back(assigns) do
     ~H"""
-    <div class="mt-16">
+    <%!-- <div class={["mt-16", @container_class]}> --%>
+    <div class={[@container_class]}>
       <.link
         navigate={@navigate}
         class={["text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700", @class]}

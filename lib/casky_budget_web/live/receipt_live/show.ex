@@ -88,7 +88,7 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
       >
         <div :if={!@receipt.is_approved}>
           <h3>Are you sure you want to approve?</h3>
-          <div class="flex gap-6">
+          <div class="flex gap-6 justify-end">
             <.button phx-click={hide_modal("approval-confirm-receipt-#{@receipt.id}")}>
               Cancel
             </.button>
@@ -97,10 +97,11 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
         </div>
         <div :if={@receipt.is_approved}>
           <h3>Receipt Approved.</h3>
-          <div class="flex gap-6">
+          <div class="flex gap-6 justify-end items-center">
             <.back
               navigate={"/budget/subcategory/#{@receipt.sub_category_id}"}
               class="hover:text-blue-600"
+              container_class="mt-0"
             >
               Back to {@receipt.sub_category.name}
             </.back>
@@ -137,11 +138,6 @@ defmodule CaskyBudgetWeb.ReceiptLive.Show do
               </.button>
             </:actions>
           </.simple_form>
-          <div class="flex gap-6 mt-6 justify-end">
-            <.button phx-click={hide_modal("pay-receipt-#{@receipt.id}")}>
-              Cancel
-            </.button>
-          </div>
         </div>
       </.modal>
     </div>
